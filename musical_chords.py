@@ -95,10 +95,10 @@ while(True):
             for chord in song:
                 # instrument += 1
                 player.set_instrument(instrument)
-                print(instrument,MIDI_NOTE_NAMES[chord[0]%12], chord[1])
                 offset = chord[0]
                 root = STARTING_NOTE+offset
                 scale = CHORDS[chord[1]]
+                print(MIDI_NOTE_NAMES[root%12], chord[1])
                 notes = [root+sum(scale[:i]) for i in range(len(scale)+1)]
                 notes += [root+12+sum(scale[:i+1]) for i in range(len(scale))]
                 player.note_on(notes[0]-12, 127)

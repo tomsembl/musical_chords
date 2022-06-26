@@ -86,19 +86,19 @@ pygame.midi.init()
 player = pygame.midi.Output(0)
 instrument = 0
 player.set_instrument(instrument)
-STARTING_NOTE = 56
+STARTING_NOTE = 54
 while(True):
     for song_name in SONGS:
         song = SONGS[song_name]
         print("\n"+song_name)
         for _ in range(2):
             for chord in song:
-                instrument += 1
+                # instrument += 1
                 player.set_instrument(instrument)
-                print(instrument,MIDI_NOTE_NAMES[chord[0]%12], chord[1])
                 offset = chord[0]
                 root = STARTING_NOTE+offset
                 scale = CHORDS[chord[1]]
+                print(MIDI_NOTE_NAMES[root%12], chord[1])
                 notes = [root+sum(scale[:i]) for i in range(len(scale)+1)]
                 notes += [root+12+sum(scale[:i+1]) for i in range(len(scale))]
                 player.note_on(notes[0]-12, 127)
