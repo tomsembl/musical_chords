@@ -1,8 +1,11 @@
 import pygame.midi, time, random
+from win32com.client import Dispatch
+
+
 
 BPM = 160
-seconds_per_beat = 60.0 / BPM
-sixteenth_note = seconds_per_beat / 4
+SECONDS_PER_BEAT = 60.0 / BPM
+SIXTEENTH_NOTE = SECONDS_PER_BEAT / 4
 
 CHORDS = {
     'major': (4, 3, 5),
@@ -84,14 +87,14 @@ SONGS = {
         
     ],
     "simple_twist_of_fate": [ # [offset, chord]
-        (0,"major",4),
-        (0,"major_7th",4),
-        (0,"major_♭7th",4),
-        (-INTERVALS["perfect_5th"],"major",4),
-        (-INTERVALS["perfect_5th"],"minor",4),
-        (0,"major",4), 
-        (-INTERVALS["perfect_4th"],"major_sus_4",4),
-        (0,"major",4),
+        (0-5,"major",4),
+        (0-5,"major_7th",4),
+        (0-5,"major_♭7th",4),
+        (-5-INTERVALS["perfect_5th"],"major",4),
+        (-5-INTERVALS["perfect_5th"],"minor",4),
+        (0-5,"major",4), 
+        (-5-INTERVALS["perfect_4th"],"major_sus_4",4),
+        (0-5,"major",4),
     ],
     "pop 4 chords minor": [
         (0,"minor",4),
@@ -106,7 +109,7 @@ SONGS = {
         (-INTERVALS["perfect_5th"],"major",4),
     ],
 }
-
+SONGS["all_chords"] = [(0,x,3) for x in CHORDS]
 MIDI_NOTE_NAMES = ["C","C#/D♭","D","D#/E♭","E","F","F#/G♭","G","G#/A♭","A","A#/B♭","B"]
 
 pygame.midi.init()
@@ -118,6 +121,7 @@ while(True):
     for song_name in SONGS:
         song = SONGS[song_name]
         print("\n"+song_name)
+        Dispatch("SAPI.SpVoice").Speak(song_name.replace("_"," "))
         for _ in range(2):
             last = None
             for chord in song:
@@ -145,26 +149,11 @@ while(True):
                     last = notes.index(note)
                     visited.append(last)
                     player.note_on(note, 127)
-                    time.sleep(sixteenth_note)
+                    time.sleep(SIXTEENTH_NOTE)
                 for note in notes:
                     player.note_off(note, 127)
                 player.note_off(notes[0]-12, 127)
-        time.sleep(seconds_per_beat*3)
-
-
-    print("\nall chords:")
-    for chord_name in CHORDS:
-        chord = CHORDS[chord_name]
-        print(chord_name, chord)
-        notes = [STARTING_NOTE+sum(chord[:i]) for i in range(len(chord)+1)]
-        notes += [STARTING_NOTE+12+sum(chord[:i+1]) for i in range(len(chord))]
-        player.note_on(notes[0]-24, 127)
-        for note in notes+notes[::-1][1:]:
-            player.note_on(note, 127)
-            time.sleep(sixteenth_note)
-        time.sleep(sixteenth_note*1)
-        for note in notes:
-            player.note_off(note, 127)
+        time.sleep(SECONDS_PER_BEAT*3)
 
 
         
