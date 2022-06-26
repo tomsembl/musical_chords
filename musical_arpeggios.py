@@ -108,6 +108,7 @@ while(True):
                 for note in notes:
                     player.note_off(note, 127)
                 player.note_off(notes[0]-12, 127)
+        time.sleep(seconds_per_beat)
 
 
     print("\nall chords:")
