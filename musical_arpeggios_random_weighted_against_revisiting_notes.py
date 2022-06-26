@@ -84,7 +84,7 @@ MIDI_NOTE_NAMES = ["C","C#/D♭","D","D#/E♭","E","F","F#/G♭","G","G#/A♭","
 
 pygame.midi.init()
 player = pygame.midi.Output(0)
-instrument = 0
+instrument = 1
 player.set_instrument(instrument)
 STARTING_NOTE = 56
 while(True):
@@ -109,7 +109,7 @@ while(True):
                     weights = [0 if i == last else 0 if i in visited else 10**(2/abs((last-i))) for i,_ in enumerate(notes)]
                     weights = [w-min(weights) for w in weights]
                     if set(weights) == {0}:
-                        visited = []
+                        visited = visited[-1:]
                         weights = [0 if i == last else 0 if i in visited else 10**(2/abs((last-i))) for i,_ in enumerate(notes)]
                         weights = [w-min(weights) for w in weights]
                     print(notes, weights)
@@ -121,7 +121,7 @@ while(True):
                 for note in notes:
                     player.note_off(note, 127)
                 player.note_off(notes[0]-12, 127)
-        time.sleep(seconds_per_beat)
+        time.sleep(seconds_per_beat*3)
 
 
     print("\nall chords:")
