@@ -84,7 +84,7 @@ MIDI_NOTE_NAMES = ["C","C#/D♭","D","D#/E♭","E","F","F#/G♭","G","G#/A♭","
 
 pygame.midi.init()
 player = pygame.midi.Output(0)
-instrument = 38
+instrument = 0
 player.set_instrument(instrument)
 STARTING_NOTE = 56
 while(True):
@@ -107,7 +107,11 @@ while(True):
                 visited = []
                 for _ in range(12):
                     weights = [0 if i == last else 0 if i in visited else 10**(2/abs((last-i))) for i,_ in enumerate(notes)]
-                    weights = [1+w-min(weights) for w in weights]
+                    weights = [w-min(weights) for w in weights]
+                    if set(weights) == {0}:
+                        visited = []
+                        weights = [0 if i == last else 0 if i in visited else 10**(2/abs((last-i))) for i,_ in enumerate(notes)]
+                        weights = [w-min(weights) for w in weights]
                     print(notes, weights)
                     note = random.choices(notes, weights=weights)[0]
                     last = notes.index(note)
